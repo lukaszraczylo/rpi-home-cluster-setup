@@ -1,0 +1,35 @@
+---
+- name: Initialize cluster
+  ansible.builtin.shell:
+    cmd: |
+      kubeadm reset -f
+      kubeadm init --pod-network-cidr=10.244.0.0/16
+    creates: /etc/kubernetes/kubelet.conf
+  register: k8sinit_output
+
+- name: Storing Logs and Generated token for nodes config
+  ansible.builtin.copy:
+    content: '{{ k8sinit_output.stdout }}'
+    dest: cluster_join_file
+  when: '"token" in k8sinit_output.stdout'
+
+- name: Pulling the token file for setup purposes
+  ansible.builtin.fetch:
+    flat: yes
+    src: cluster_join_file
+    dest: static/token_file
+  when: '"token" in k8sinit_output.stdout'
+
+- name: Copying kubeconfig file
+  ansible.builtin.shell:
+    cmd: |
+      mkdir -p $HOME/.kube
+      cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
+      chown $(id -u):$(id -g) $HOME/.kube/config
+
+- name: Save kubeconfig locally
+  ansible.builtin.fetch:
+    flat: yes
+    src: /etc/kubernetes/admin.conf
+    dest: static/kubectl.conf
+    fail_on_missing: yes

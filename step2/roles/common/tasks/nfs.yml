@@ -1,0 +1,34 @@
+---
+- name: Install nfsprogs
+  ansible.builtin.package:
+    name:
+      - nfs-utils
+
+- name: Prepare nfs mountpoint
+  ansible.builtin.shell:
+    cmd: |
+      mkdir -p /media/nfs
+
+- name: Mount NFS resources
+  ansible.posix.mount:
+    src: "{{settings.nfs_host}}:{{settings.nfs_multi_share_path}}"
+    path: /media/nfs
+    fstype: nfs
+    opts: nofail,noatime,nolock,tcp,actimeo=1800
+    state: mounted
+
+- name: Mount NFS torrent
+  ansible.posix.mount:
+    src: "{{settings.nfs_host}}:{{settings.nfs_torrent_path}}"
+    path: /mnt/drobo-storage/docker-volumes/torrent
+    fstype: nfs
+    opts: nofail,noatime,nolock,tcp,actimeo=1800
+    state: mounted
+
+- name: Mount NFS adguard
+  ansible.posix.mount:
+    src: "{{settings.nfs_host}}:{{settings.nfs_adguard_path}}"
+    path: /mnt/drobo-storage/docker-volumes/adguard
+    fstype: nfs
+    opts: nofail,noatime,nolock,tcp,actimeo=1800
+    state: mounted

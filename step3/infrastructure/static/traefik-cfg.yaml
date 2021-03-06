@@ -1,0 +1,4 @@
+providers:
+  file:
+    filename: /custom-data/traefik-config.yaml
+  kubernetesIngress: {}

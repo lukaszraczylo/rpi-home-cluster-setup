@@ -1,0 +1,31 @@
+---
+- name: Copy token file to workers
+  ansible.builtin.copy:
+    src: static/token_file
+    dest: /root/cluster_token_file
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Joining worker nodes with kubernetes master
+  ansible.builtin.shell:
+    cmd: |
+      kubeadm reset -f
+      cat /root/cluster_token_file | tail -2 > out.sh
+      sh out.sh
+    creates: out.sh
+
+- name: Copy kubectl config to workers
+  ansible.builtin.copy:
+    src: static/kubectl.conf
+    dest: /root/kubectl-config
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copying kubeconfig file
+  ansible.builtin.shell:
+    cmd: |
+      mkdir -p $HOME/.kube
+      cp -f /root/kubectl-config $HOME/.kube/config
+      chown $(id -u):$(id -g) $HOME/.kube/config

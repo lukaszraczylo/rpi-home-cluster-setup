@@ -1,0 +1,22 @@
+# Activate Pilot integration
+pilot:
+  enabled: true
+  token: "${traefik_api_key_value}"
+
+additionalArguments:
+  # - --entryPoints.tcpentry.address=:3333/tcp
+  # - --entryPoints.udpentry.address=:3333/udp
+  - --entryPoints.dnsentry.address=:53/udp
+  - --providers.file.filename=/custom-data/traefik-config.yaml
+  - --providers.file.watch=true
+  - --providers.kubernetesingress=true
+  - --metrics.prometheus=true
+  - --metrics.prometheus.entryPoint=metrics
+  - --metrics.prometheus.addServicesLabels=true
+  - --metrics.prometheus.addEntryPointsLabels=true
+  - --entryPoints.metrics.address=:8082
+
+volumes:
+  - mountPath: /custom-data
+    name: traefik-config
+    type: configMap

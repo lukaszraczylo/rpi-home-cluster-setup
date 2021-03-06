@@ -1,0 +1,16 @@
+KEYMAPOPTS="us us-intl"
+HOSTNAMEOPTS="-n alpine-test"
+
+INTERFACESOPTS="auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+    hostname alpine-test
+"
+
+DNSOPTS="-d local"
+TIMEZONEOPTS="-z UTC"
+APKREPOSOPTS="-f"
+SSHDOPTS="-c openssh"
+NTPOPTS="-c openntpd"

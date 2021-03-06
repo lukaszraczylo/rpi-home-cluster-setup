@@ -1,0 +1,94 @@
+---
+- name: Install packages - filesystem
+  ansible.builtin.package:
+    name:
+      - e2fsprogs
+      - parted
+    state: present
+
+- name: Create partition for perm data
+  community.general.parted:
+    device: /dev/mmcblk0
+    number: 2
+    fs_type: ext4
+    part_start: 1GiB
+    part_end: 100%
+    flags: [ boot ]
+    state: present
+
+- name: Fomat perm data partition
+  community.general.filesystem:
+    dev: /dev/mmcblk0p2
+    fstype: ext4
+  ignore_errors: yes
+
+- name: Re-mount old data partition
+  ansible.posix.mount:
+    path: /media/mmcblk0p1
+    src: /dev/mmcblk0p1
+    opts: rw
+    state: remounted
+
+- name: Mount perm data partition
+  ansible.posix.mount:
+    path: /mnt
+    src: /dev/mmcblk0p2
+    opts: rw
+    fstype: ext4
+    state: mounted
+
+- name: Overwrite setup-disk
+  ansible.builtin.copy:
+    src: static/setup-disk
+    dest: /sbin/setup-disk
+    owner: root
+    group: root
+    mode: '0744'
+    backup: yes
+
+- name: Setup new disk as system
+  ansible.builtin.command:
+    cmd: setup-disk -m sys /mnt
+    creates: /mnt/bin/date
+
+- name: Housekeeping
+  ansible.builtin.shell:
+    cmd: |
+      rm -f /media/mmcblk0p1/boot/*
+      cd /mnt
+      rm boot/boot
+      mv boot/* /media/mmcblk0p1/boot/
+      rm -Rf boot
+      mkdir media/mmcblk0p1
+      ln -s media/mmcblk0p1/boot boot
+    removes: /mnt/boot/boot
+
+- name: Add mountpoints to fstab
+  ansible.builtin.shell:
+    cmd: |
+      echo "/dev/mmcblk0p1 /media/mmcblk0p1 vfat defaults 0 0" >> etc/fstab
+      echo "/dev/mmcblk0p1 /media/mmcblk0p1 vfat defaults 0 0" >> /etc/fstab
+      sed -i '/cdrom/d' etc/fstab
+      sed -i '/floppy/d' etc/fstab
+      sed -i '/usbdisk/d' etc/fstab
+      touch /mnt/.nvm_mountpoints
+    chdir: /mnt
+    creates: /mnt/.nvm_mountpoints
+
+- name: Enable repositories and cgroups
+  ansible.builtin.shell:
+    cmd: |
+      sed -i '/edge/s/^#//' /mnt/etc/apk/repositories
+      sed -i 's/^/root=\/dev\/mmcblk0p2 /' /media/mmcblk0p1/cmdline.txt
+      echo "cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1" >> /media/mmcblk0p1/cmdline.txt
+      sed -i ':a;N;$!ba;s/\n/ /g' /media/mmcblk0p1/cmdline.txt
+      touch /mnt/.nvm_cgroups
+    creates: /mnt/.nvm_cgroups
+
+- name: Commit changes
+  ansible.builtin.shell:
+    chdir: /media/mmcblk0p1
+    cmd: lbu_commit -d || true
+
+- name: Reboot
+  reboot:

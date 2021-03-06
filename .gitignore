@@ -1,0 +1,9 @@
+step1/static/alpine-aarch64.tar.gz
+step2/static/token_file
+step2/static/kubectl.conf
+# 
+
+*/traefik-static-config.yaml
+*terraform.tfstate*
+*.log
+*/.terraform/

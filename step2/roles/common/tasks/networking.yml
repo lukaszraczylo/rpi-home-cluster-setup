@@ -1,0 +1,68 @@
+---
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: '{{ inventory_hostname }}'
+
+- name: "Build hosts file"
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{hostvars[item]['ansible_default_ipv4']['address']}} {{item}} {{item}}.local"
+    state: present
+  register: etchostsupdate
+  when: hostvars[item]['ansible_facts']['default_ipv4'] is defined
+  with_items:
+    - "{{ groups['all'] }}"
+
+- name: Install packages for networking
+  ansible.builtin.package:
+    name:
+      - dbus
+      - avahi
+      - kubernetes
+      - kubectl
+      - docker
+      - cni-plugins
+      - kubelet
+      - kubeadm
+      - sudo
+      - curl
+    state: present
+
+- name: Enable service dbus
+  ansible.builtin.service:
+    name: dbus
+    state: started
+    enabled: yes
+
+- name: Overwrite avahi config
+  ansible.builtin.copy:
+    src: static/avahi-config
+    dest: /etc/avahi/avahi-daemon.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Enable service avahi
+  ansible.builtin.service:
+    name: avahi-daemon
+    state: restarted
+    enabled: yes
+
+- name: Enable service docker
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Enable service kubelet
+  ansible.builtin.service:
+    name: kubelet
+    state: started
+    enabled: yes
+
+- name: Enable promisc mode for ARP requests
+  ansible.builtin.shell:
+    cmd: |
+      ip link set eth0 promisc on

@@ -1,0 +1,11 @@
+---
+- name: Pull basic images
+  ansible.builtin.shell:
+    cmd: kubeadm config images pull
+
+- name: Install helm
+  ansible.builtin.shell:
+    cmd: |
+      curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+    creates: /etc/kubernetes/kubelet.conf
+  register: k8sinit_output

@@ -1,0 +1,5 @@
+---
+# - name: Github authentication
+#   ansible.builtin.shell:
+#     cmd: |
+#       kubectl create secret docker-registry docker-ghcr --docker-server=https://ghcr.io --docker-username=lukaszraczylo --docker-password=$GITHUB_TOKEN --docker-email=lukasz@raczylo.com

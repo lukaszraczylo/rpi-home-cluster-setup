@@ -1,0 +1,22 @@
+---
+- hosts: all
+  vars:
+    settings:
+      nfs_host: 192.168.50.5
+      nfs_torrent_path: "/mnt/drobo-storage/docker-volumes/torrent"
+      nfs_adguard_path: "/mnt/drobo-storage/docker-volumes/adguard"
+      nfs_multi_share_path: "/mnt/drobo-storage/docker-volumes/nfs-share"
+  roles:
+    - common
+
+- hosts: masters
+  roles:
+    - kubemaster
+
+- hosts: workers
+  roles:
+    - kubeworkers
+
+- hosts: masters
+  roles:
+    - basics

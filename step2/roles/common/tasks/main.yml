@@ -1,0 +1,9 @@
+---
+- name: Check for base system config lockfile
+  stat: path="/mnt/.nvm_mountpoints"
+  register: basic_config_lock
+- include: filesystem.yml
+  when: basic_config_lock.stat.exists == False
+- include: networking.yml
+- include: kubernetes.yml
+- include: nfs.yml
