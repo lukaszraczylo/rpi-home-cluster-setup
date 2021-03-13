@@ -4,6 +4,7 @@ rtorrent_rpc_host = "245"
 adguard_host      = "240"
 adguard_catchall_host  = "249"
 
+nfs_general_path = "/media/nfs"
 nfs_torrent_path = "/mnt/drobo-storage/docker-volumes/torrent"
 nfs_adguard_path = "/mnt/drobo-storage/docker-volumes/adguard"
 
