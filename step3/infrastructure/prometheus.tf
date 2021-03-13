@@ -39,6 +39,23 @@ kubectl patch ds prometheus-prometheus-node-exporter --type json -p '[{"op": "re
   }
 }
 
+resource "null_resource" "prometheus_crd_on_destroy" {
+  depends_on = [helm_release.prometheus]
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOF
+kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
+kubectl delete crd alertmanagers.monitoring.coreos.com
+kubectl delete crd podmonitors.monitoring.coreos.com
+kubectl delete crd probes.monitoring.coreos.com
+kubectl delete crd prometheuses.monitoring.coreos.com
+kubectl delete crd prometheusrules.monitoring.coreos.com
+kubectl delete crd servicemonitors.monitoring.coreos.com
+kubectl delete crd thanosrulers.monitoring.coreos.com
+    EOF
+  }
+}
+
 resource "kubernetes_ingress" "traefik_grafana_routing" {
   metadata {
     name = "traefik-k8s-grafana"
