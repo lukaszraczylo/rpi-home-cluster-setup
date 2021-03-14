@@ -26,6 +26,18 @@ resource "helm_release" "prometheus" {
     name  = "grafana.plugins"
     value = "devopsprodigy-kubegraf-app"
   }
+  set {
+    name  = "prometheus-node-exporter.image.tag"
+    value = "v1.1.2"
+  }
+  set {
+    name = "prometheus.prometheusSpec.image.tag"
+    value = "v2.25.1"
+  }
+  set {
+    name = "prometheus.alertManagerSpec.image.tag"
+    value = "v2.25.1"
+  }
 }
 
 ## SEE following for the dashboard configuration
