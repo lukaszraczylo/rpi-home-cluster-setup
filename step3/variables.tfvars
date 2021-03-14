@@ -14,5 +14,12 @@ nfs_storage = {
   adguard = "/mnt/drobo-storage/docker-volumes/adguard"
 }
 
+# Images definition to make it easier to update
+images = {
+  flood_torrent = "ghcr.io/lukaszraczylo/flood:1.2292.7"
+  etcd = "gcr.io/etcd-development/etcd:v3.4.15-arm64"
+  adguard = "adguard/adguardhome:arm64-edge"
+}
+
 # ENV variable: TRAEFIK_API_KEY sets traefik_api_key
 # ENV variable: GH_USER, GH_PAT for authentication with private containers

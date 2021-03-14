@@ -83,7 +83,7 @@ resource "kubernetes_cron_job" "etcd_backup" {
             }
             container {
               name  = "etcd-backup"
-              image = "gcr.io/etcd-development/etcd:v3.4.15-arm64"
+              image = var.images.etcd
               env {
                 name  = "ETCDCTL_API"
                 value = "3"

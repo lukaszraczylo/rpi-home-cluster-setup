@@ -180,7 +180,7 @@ resource "kubernetes_deployment" "adguard" {
         }
         container {
           name  = "adguard"
-          image = "adguard/adguardhome:arm64-edge"
+          image = var.images.adguard
           port {
             container_port = 53
             protocol       = "TCP"

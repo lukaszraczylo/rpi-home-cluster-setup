@@ -149,7 +149,7 @@ resource "kubernetes_deployment" "flood-torrent" {
         }
         container {
           name  = "flood-torrent"
-          image = "ghcr.io/lukaszraczylo/flood:1.2292.7"
+          image = var.images.flood_torrent
           env {
             name  = "FLOOD_DISABLE_AUTH"
             value = "true"
