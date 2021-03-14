@@ -3,6 +3,7 @@ network_subnet    = "192.168.50"
 rtorrent_rpc_host = "245"
 adguard_host      = "240"
 adguard_catchall_host  = "249"
+traefik_host      = "234"
 
 nfs_general_path = "/media/nfs"
 nfs_torrent_path = "/mnt/drobo-storage/docker-volumes/torrent"
