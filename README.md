@@ -3,6 +3,10 @@
 This repository is supposed to help if I'd EVER AGAIN destroy the whole cluster by accident.
 Code is a result of 6 hours coding marathon, but will be improved and patched in future.
 
+## Enhanced documentation
+
+More explainatory documentation can be found in Medium article "[I broke my Raspberry Pi kubernetes cluster](https://blog.raczylo.com/i-broke-my-kubernetes-cluster-running-on-raspberry-pi-355234a24d)" published 14/03 ( Pi day ).
+
 ## Usage
 
 ### Memory card preparations [step1]
