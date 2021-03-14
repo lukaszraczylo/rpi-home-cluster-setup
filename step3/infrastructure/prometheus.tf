@@ -23,7 +23,7 @@ resource "helm_release" "prometheus" {
     value = "admin"
   }
   set {
-    name = "grafana.plugins"
+    name  = "grafana.plugins"
     value = "devopsprodigy-kubegraf-app"
   }
 }
