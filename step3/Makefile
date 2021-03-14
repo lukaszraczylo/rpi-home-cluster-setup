@@ -9,6 +9,9 @@ plan:
 destroy:
 	cd infrastructure; terraform destroy $(ADDITIONAL_ARGS) -var-file ../variables.tfvars
 
+destroy-target:
+	cd infrastructure; terraform destroy $(ADDITIONAL_ARGS) -var-file ../variables.tfvars -target $(TARGET)
+
 refresh:
 	cd infrastructure; terraform refresh $(ADDITIONAL_ARGS) -var-file ../variables.tfvars
 
