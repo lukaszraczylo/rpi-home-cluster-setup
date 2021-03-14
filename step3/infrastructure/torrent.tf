@@ -67,7 +67,7 @@ resource "kubernetes_service" "torrent_svc" {
       port        = 3000
       target_port = 3000
     }
-    load_balancer_ip = "${var.network_subnet}.${var.rtorrent_rpc_host}"
+    load_balancer_ip = "${var.network_subnet}.${var.net_hosts.torrent_rpc}"
     selector = {
       "app" : "torrent"
     }
@@ -91,7 +91,7 @@ resource "kubernetes_persistent_volume" "torrent_shared_nfs" {
     access_modes       = ["ReadWriteMany"]
     persistent_volume_source {
       host_path {
-        path = var.nfs_torrent_path
+        path = var.nfs_storage.torrent
       }
     }
   }
@@ -154,7 +154,7 @@ resource "kubernetes_deployment" "flood-torrent" {
             name  = "FLOOD_DISABLE_AUTH"
             value = "true"
           }
-          args = ["--rthost", "${var.network_subnet}.${var.rtorrent_rpc_host}",
+          args = ["--rthost", "${var.network_subnet}.${var.net_hosts.torrent_rpc}",
             "--rtport", "5000", "-e", "HOME=/config", "--auth", "none", "-d", "/config/flood",
             "--allowedpath", "/config",
             "--allowedpath", "/data",

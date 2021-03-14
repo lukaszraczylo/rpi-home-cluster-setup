@@ -72,7 +72,7 @@ resource "kubernetes_service" "adguard_svc" {
       port        = 3000
       target_port = 3000
     }
-    load_balancer_ip = "${var.network_subnet}.${var.adguard_catchall_host}"
+    load_balancer_ip = "${var.network_subnet}.${var.net_hosts.adguard_catchall}"
     selector = {
       "app" : "adguard"
     }
@@ -97,7 +97,7 @@ resource "kubernetes_service" "adguard_udp_svc" {
       target_port = 53
       protocol    = "UDP"
     }
-    load_balancer_ip = "${var.network_subnet}.${var.adguard_host}"
+    load_balancer_ip = "${var.network_subnet}.${var.net_hosts.adguard}"
     selector = {
       "app" : "adguard"
     }
@@ -122,7 +122,7 @@ resource "kubernetes_persistent_volume" "adguard_shared_nfs" {
     access_modes       = ["ReadWriteMany"]
     persistent_volume_source {
       host_path {
-        path = var.nfs_adguard_path
+        path = var.nfs_storage.adguard
       }
     }
   }

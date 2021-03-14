@@ -11,7 +11,7 @@ resource "helm_release" "traefik" {
 
   set {
     name  = "service.spec.loadBalancerIP"
-    value = "${var.network_subnet}.${var.traefik_host}"
+    value = "${var.network_subnet}.${var.net_hosts.traefik}"
   }
 
   values = [

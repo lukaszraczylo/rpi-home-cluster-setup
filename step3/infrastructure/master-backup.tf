@@ -25,7 +25,7 @@ resource "kubernetes_persistent_volume" "etc_backup_shared_nfs" {
     access_modes       = ["ReadWriteMany"]
     persistent_volume_source {
       host_path {
-        path = "${var.nfs_general_path}/etcd-backup"
+        path = "${var.nfs_storage.general}/etcd-backup"
       }
     }
   }
