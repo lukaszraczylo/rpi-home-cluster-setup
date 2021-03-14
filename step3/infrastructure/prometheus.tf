@@ -18,15 +18,42 @@ resource "helm_release" "prometheus" {
   chart      = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
   wait       = false
-  # set {
-  #   name = "kube-state-metrics.image.repository"
-  #   value = "carlosedp/kube-state-metrics"
-  # }
+  set {
+    name  = "grafana.adminPassword"
+    value = "admin"
+  }
+  set {
+    name = "grafana.plugins"
+    value = "devopsprodigy-kubegraf-app"
+  }
+}
 
-  # set {
-  #   name = "kube-state-metrics.image.tag"
-  #   value = "v1.9.6"
-  # }
+## SEE following for the dashboard configuration
+### https://grafana.com/grafana/plugins/devopsprodigy-kubegraf-app/
+
+resource "null_resource" "kubegraf_dashboard" {
+  depends_on = [helm_release.prometheus]
+  provisioner "local-exec" {
+    when    = create
+    command = <<EOF
+kubectl create ns kubegraf
+kubectl apply -f https://raw.githubusercontent.com/devopsprodigy/kubegraf/master/kubernetes/serviceaccount.yaml
+kubectl apply -f https://raw.githubusercontent.com/devopsprodigy/kubegraf/master/kubernetes/clusterrole.yaml
+kubectl apply -f https://raw.githubusercontent.com/devopsprodigy/kubegraf/master/kubernetes/clusterrolebinding.yaml
+kubectl apply -f https://raw.githubusercontent.com/devopsprodigy/kubegraf/master/kubernetes/secret.yaml
+    EOF
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOF
+kubectl delete -f https://raw.githubusercontent.com/devopsprodigy/kubegraf/master/kubernetes/serviceaccount.yaml
+kubectl delete -f https://raw.githubusercontent.com/devopsprodigy/kubegraf/master/kubernetes/clusterrole.yaml
+kubectl delete -f https://raw.githubusercontent.com/devopsprodigy/kubegraf/master/kubernetes/clusterrolebinding.yaml
+kubectl delete -f https://raw.githubusercontent.com/devopsprodigy/kubegraf/master/kubernetes/secret.yaml
+kubectl delete ns kubegraf
+    EOF
+  }
 }
 
 resource "null_resource" "prometheus_patch" {
