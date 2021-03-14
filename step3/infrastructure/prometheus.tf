@@ -26,18 +26,18 @@ resource "helm_release" "prometheus" {
     name  = "grafana.plugins"
     value = "devopsprodigy-kubegraf-app"
   }
-  set {
-    name  = "prometheus-node-exporter.image.tag"
-    value = "v1.1.2"
-  }
-  set {
-    name = "prometheus.prometheusSpec.image.tag"
-    value = "v2.25.1"
-  }
-  set {
-    name = "prometheus.alertManagerSpec.image.tag"
-    value = "v2.25.1"
-  }
+  # set {
+  #   name  = "prometheus-node-exporter.image.tag"
+  #   value = "v1.1.2"
+  # }
+  # set {
+  #   name = "prometheus.prometheusSpec.image.tag"
+  #   value = "v2.25.1"
+  # }
+  # set {
+  #   name = "prometheus.alertManagerSpec.image.tag"
+  #   value = "v2.25.1"
+  # }
 }
 
 ## SEE following for the dashboard configuration
@@ -71,7 +71,6 @@ kubectl delete ns kubegraf
 resource "null_resource" "prometheus_patch" {
   depends_on = [helm_release.prometheus]
   provisioner "local-exec" {
-    when    = create
     command = <<EOF
 kubectl patch ds prometheus-prometheus-node-exporter --type json -p '[{"op": "remove", "path" : "/spec/template/spec/containers/0/volumeMounts/2/mountPropagation"}]' || true
     EOF
