@@ -6,6 +6,7 @@
       nfs_torrent_path: "/mnt/drobo-storage/docker-volumes/torrent"
       nfs_adguard_path: "/mnt/drobo-storage/docker-volumes/adguard"
       nfs_multi_share_path: "/mnt/drobo-storage/docker-volumes/nfs-share"
+      pimoroni_fans_enabled: "enabled"
   roles:
     - common
 

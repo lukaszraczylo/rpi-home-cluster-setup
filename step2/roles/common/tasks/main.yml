@@ -7,3 +7,5 @@
 - include: networking.yml
 - include: kubernetes.yml
 - include: nfs.yml
+- include: fan-support.yml
+  when: settings.pimoroni_fans_enabled == "enabled"
