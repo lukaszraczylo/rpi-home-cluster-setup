@@ -2,6 +2,7 @@
 - name: Pull basic images
   ansible.builtin.shell:
     cmd: kubeadm config images pull
+    creates: /etc/kubernetes/kubelet.conf
 
 - name: Install helm
   ansible.builtin.shell:

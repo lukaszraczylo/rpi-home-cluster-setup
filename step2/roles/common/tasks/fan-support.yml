@@ -1,0 +1,35 @@
+---
+- name: Install packages - fan support
+  ansible.builtin.package:
+    name:
+      - git
+      - go
+    state: present
+
+- name: PiMoroni fan shim repo
+  ansible.builtin.git:
+    repo: 'https://github.com/lukaszraczylo/fanshim-go.git'
+    dest: /srv/pimoroni-fans
+    force: yes
+
+- name: Install pimoroni fans
+  ansible.builtin.shell:
+    chdir: /srv/pimoroni-fans
+    cmd: |
+      go build -o /usr/bin/fans
+    creates: /usr/bin/fans
+
+- name: Copy startup script
+  ansible.builtin.copy:
+    src: static/pi-fans
+    dest: /etc/init.d/fans
+    owner: root
+    group: root
+    mode: '0744'
+    backup: no
+
+- name: Start and enable fans service
+  ansible.builtin.service:
+    name: fans
+    state: restarted
+    enabled: yes
