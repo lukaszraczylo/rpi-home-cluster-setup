@@ -158,7 +158,7 @@ resource "kubernetes_deployment" "adguard" {
   }
 
   spec {
-    replicas = 1
+    replicas = 2
     selector {
       match_labels = {
         app = "adguard"

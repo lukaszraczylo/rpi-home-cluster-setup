@@ -2,7 +2,7 @@
 
 name="fans $RC_SVCNAME"
 command="/usr/bin/fans"
-command_args="-brightness 5 --on-threshold 65 --off-threshold 50 -extended-colors"
+command_args="-brightness 5 --on-threshold 60 --off-threshold 50 -extended-colors"
 command_user="root"
 pidfile="/run/$RC_SVCNAME.pid"
 command_background="yes"
