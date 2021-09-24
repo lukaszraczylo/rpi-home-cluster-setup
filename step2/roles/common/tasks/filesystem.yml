@@ -37,16 +37,9 @@
     fstype: ext4
     state: mounted
 
-- name: Overwrite setup-disk
-  ansible.builtin.copy:
-    src: static/setup-disk
-    dest: /sbin/setup-disk
-    owner: root
-    group: root
-    mode: '0744'
-    backup: yes
-
 - name: Setup new disk as system
+  environment:
+    FORCE_BOOTFS: 1
   ansible.builtin.command:
     cmd: setup-disk -m sys /mnt
     creates: /mnt/bin/date
